@@ -7,15 +7,25 @@ WORKDIR /app
 COPY ./frontend ./frontend
 
 # Instalamos dependencias y construimos el frontend
-RUN cd frontend && npm install && npm run build
+RUN npm install && npm run build
+
+# Verificar variables de entorno
+RUN printenv
 
 # Backend stage (para Python)
 FROM mcr.microsoft.com/devcontainers/python:0-3.10
 
 ENV PYTHONUNBUFFERED 1
 
+ARG NODE_ENV
+ENV NODE_ENV $NODE_ENV
+
+
 # Copiamos los archivos del backend
 COPY ./backend ./backend
+
+# Copiamos archivo .env
+COPY .env /app/.env
 
 # Instalamos las dependencias del backend
 WORKDIR /backend
